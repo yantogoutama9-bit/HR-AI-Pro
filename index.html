@@ -1,0 +1,3548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR AI Pro - Sistem Manajemen Sumber Daya Manusia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF untuk PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-dark: #2d2d2d;
+            --accent-gold: #c9a96e;
+            --accent-gold-light: #e0c9a0;
+            --accent-gold-dark: #a0844a;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-light: #999999;
+            --bg-white: #ffffff;
+            --bg-cream: #faf9f7;
+            --bg-warm: #f5f3f0;
+            --border-light: #e8e6e3;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-medium: 0 8px 30px rgba(0,0,0,0.08);
+            --shadow-elegant: 0 12px 40px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-white);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-weight: 400;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.4s ease;
+        }
+
+        header.scrolled {
+            box-shadow: var(--shadow-soft);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--bg-white);
+            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        .logo-text h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .logo-text span {
+            color: var(--accent-gold);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 500;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-dark);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 3rem 4rem;
+            text-align: center;
+            background: var(--bg-cream);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-white);
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-light);
+            color: var(--accent-gold-dark);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hero h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .hero h2 span {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            color: var(--bg-white);
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(201, 169, 110, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(201, 169, 110, 0.4);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 3rem;
+        }
+
+        .section-label {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-label h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .section-label p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .gold-line {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-light));
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        /* Feature Cards Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-light));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-elegant);
+            border-color: transparent;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-cream);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent-gold-dark);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+        }
+
+        .feature-card:hover .feature-icon {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            color: var(--bg-white);
+            transform: scale(1.1);
+            border-color: transparent;
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
+        }
+
+        .feature-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            background: var(--bg-cream);
+            color: var(--accent-gold-dark);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-tag {
+            background: var(--accent-gold);
+            color: var(--bg-white);
+            border-color: var(--accent-gold);
+        }
+
+        /* Active Feature Section */
+        .active-feature {
+            background: var(--bg-white);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow-elegant);
+            margin-top: 2rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        .active-feature.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: var(--bg-cream);
+            border: 1px solid var(--border-light);
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-white);
+            border-color: var(--accent-gold);
+            transform: rotate(90deg);
+        }
+
+        /* ===== DRAG & DROP STYLES ===== */
+        .drag-drop-zone {
+            border: 2.5px dashed var(--border-light);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            background: var(--bg-cream);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drag-drop-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.03) 0%, rgba(201, 169, 110, 0.08) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .drag-drop-zone:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .drag-drop-zone:hover::before {
+            opacity: 1;
+        }
+
+        .drag-drop-zone.drag-over {
+            border-color: var(--accent-gold);
+            background: rgba(201, 169, 110, 0.08);
+            transform: scale(1.01);
+        }
+
+        .drag-drop-zone.drag-over::before {
+            opacity: 1;
+        }
+
+        .drag-drop-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .drag-drop-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .drag-drop-zone:hover .drag-drop-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .drag-drop-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .drag-drop-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .drag-drop-formats {
+            display: inline-flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .format-badge {
+            background: var(--bg-white);
+            color: var(--accent-gold-dark);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+        }
+
+        .file-preview-area {
+            display: none;
+            background: var(--bg-white);
+            border: 1.5px solid var(--border-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            animation: slideIn 0.4s ease;
+        }
+
+        .file-preview-area.show {
+            display: block;
+        }
+
+        .file-info-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: var(--bg-cream);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .file-info-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .file-details h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .file-details p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .file-remove-btn {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-remove-btn:hover {
+            background: #ffebee;
+            color: #c62828;
+            border-color: #ffcdd2;
+        }
+
+        .file-edit-textarea {
+            width: 100%;
+            padding: 1.25rem;
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            resize: vertical;
+            min-height: 200px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .file-edit-textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 4px rgba(201, 169, 110, 0.1);
+        }
+
+        .file-edit-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        /* ===== CV REVIEW RESULT STYLES ===== */
+        .cv-review-result {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .cv-review-result.show {
+            display: block;
+        }
+
+        /* Tabs Navigation */
+        .review-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: var(--bg-cream);
+            padding: 0.5rem;
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+        }
+
+        .review-tab {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .review-tab:hover {
+            background: rgba(201, 169, 110, 0.1);
+            color: var(--accent-gold-dark);
+        }
+
+        .review-tab.active {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
+        }
+
+        /* Tab Content */
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Strengths & Weaknesses Cards */
+        .sw-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sw-card {
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1.5px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .sw-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .sw-card.strengths {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border-color: #c8e6c9;
+        }
+
+        .sw-card.weaknesses {
+            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+            border-color: #ffcdd2;
+        }
+
+        .sw-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sw-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .sw-card.strengths .sw-icon {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .sw-card.weaknesses .sw-icon {
+            background: #c62828;
+            color: white;
+        }
+
+        .sw-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .sw-card.strengths .sw-title {
+            color: #2e7d32;
+        }
+
+        .sw-card.weaknesses .sw-title {
+            color: #c62828;
+        }
+
+        .sw-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sw-list li {
+            padding: 0.875rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .sw-list li:last-child {
+            border-bottom: none;
+        }
+
+        .sw-list li i {
+            margin-top: 0.2rem;
+            font-size: 0.85rem;
+        }
+
+        .sw-card.strengths .sw-list li i {
+            color: #2e7d32;
+        }
+
+        .sw-card.weaknesses .sw-list li i {
+            color: #c62828;
+        }
+
+        /* Suggestions Section */
+        .suggestions-card {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            border-radius: 20px;
+            padding: 2.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .suggestions-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .suggestions-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .suggestions-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--accent-gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .suggestions-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold-light);
+            font-weight: 700;
+        }
+
+        .suggestion-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            margin-bottom: 0.875rem;
+            border: 1px solid rgba(201, 169, 110, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(201, 169, 110, 0.3);
+        }
+
+        .suggestion-number {
+            min-width: 32px;
+            height: 32px;
+            background: var(--accent-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .suggestion-content h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--accent-gold-light);
+            margin-bottom: 0.35rem;
+            font-weight: 600;
+        }
+
+        .suggestion-content p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        /* Resume Preview Section */
+        .resume-preview-card {
+            background: var(--bg-white);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resume-preview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-light), var(--accent-gold));
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .resume-header h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .resume-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .resume-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .resume-section h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--accent-gold-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .resume-section p, .resume-section li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .resume-section ul {
+            padding-left: 1.5rem;
+        }
+
+        .resume-section li {
+            margin-bottom: 0.4rem;
+        }
+
+        .resume-score-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .resume-score-track {
+            flex: 1;
+            height: 10px;
+            background: var(--border-light);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .resume-score-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .resume-score-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Download PDF Button */
+        .download-pdf-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(211, 47, 47, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .download-pdf-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(211, 47, 47, 0.4);
+        }
+
+        .download-pdf-btn i {
+            font-size: 1.2rem;
+        }
+
+        .download-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn-analyze-again {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: transparent;
+            color: var(--accent-gold-dark);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid var(--accent-gold);
+            transition: all 0.3s ease;
+        }
+
+        .btn-analyze-again:hover {
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 1.5px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: var(--bg-white);
+            box-shadow: 0 0 0 4px rgba(201, 169, 110, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            color: var(--bg-white);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
+            letter-spacing: 0.5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-gold-dark);
+            border: 1.5px solid var(--accent-gold);
+            padding: 0.875rem 2rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-gold);
+            color: var(--bg-white);
+        }
+
+        /* Results Styling */
+        .result-box {
+            background: var(--bg-cream);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--accent-gold);
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .score-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-gold) calc(var(--score) * 3.6deg), var(--border-light) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: var(--bg-white);
+            border-radius: 50%;
+        }
+
+        .score-value {
+            position: relative;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .status-hire {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-pending {
+            background: #fff8e1;
+            color: #f57f17;
+            border: 1px solid #ffecb3;
+        }
+
+        .status-reject {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Document Preview */
+        .document-preview {
+            background: var(--bg-white);
+            border: 1.5px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-top: 1.5rem;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.8;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .document-header {
+            text-align: center;
+            border-bottom: 3px double var(--accent-gold);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .document-header h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
+        /* Social Media Section */
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .social-card {
+            background: var(--bg-cream);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .social-input {
+            background: var(--bg-white);
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .comment-thread {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--accent-gold);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+            color: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow-elegant);
+        }
+
+        .insight-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.3rem;
+            color: var(--accent-gold-light);
+        }
+
+        .hashtag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .hashtag {
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--accent-gold-light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .hashtag:hover {
+            background: var(--accent-gold);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+        }
+
+        /* Image Generation */
+        .image-gen-area {
+            background: var(--bg-cream);
+            border: 2px dashed var(--accent-gold);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .image-gen-area:hover {
+            background: rgba(201, 169, 110, 0.05);
+            border-color: var(--accent-gold-dark);
+        }
+
+        .generated-image {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .generated-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" x="10" y="10" width="80" height="80"/></svg>');
+            opacity: 0.3;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            color: var(--accent-gold-dark);
+            font-weight: 500;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* About Section */
+        .about-section {
+            background: var(--bg-cream);
+            padding: 5rem 3rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-light);
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .about-image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, var(--bg-warm), var(--bg-cream));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-image-placeholder::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 3px solid var(--accent-gold);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .about-image-placeholder i {
+            font-size: 4rem;
+            color: var(--accent-gold);
+            opacity: 0.5;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--bg-white);
+            padding: 5rem 3rem;
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .contact-content > p {
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: 1rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-card {
+            background: var(--bg-cream);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--accent-gold);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            border: 2px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover .contact-icon {
+            background: var(--accent-gold);
+            color: var(--bg-white);
+            border-color: var(--accent-gold);
+        }
+
+        .contact-card h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .contact-form {
+            background: var(--bg-cream);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: var(--bg-white);
+            padding: 4rem 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .footer-text {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .footer-social a {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .footer-social a:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 2.2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .social-grid { grid-template-columns: 1fr; }
+            .score-display { flex-direction: column; }
+            .about-content { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .about-stats { grid-template-columns: 1fr; }
+            nav { padding: 1rem 1.5rem; }
+            .nav-links { display: none; }
+            .container { padding: 2rem 1.5rem; }
+            .sw-grid { grid-template-columns: 1fr; }
+            .review-tabs { flex-direction: column; }
+            .download-actions { flex-direction: column; align-items: center; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-cream);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-gold);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-gold-dark);
+        }
+
+        /* AI Thinking Animation */
+        .ai-thinking {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-gold-dark);
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .ai-thinking.show {
+            display: flex;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Utility */
+        .text-center { text-align: center; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-2 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader">
+        <nav>
+            <a href="#home" class="logo" onclick="scrollToSection('home')">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>HR AI Pro</h1>
+                    <span>Smart Human Resources</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features" onclick="scrollToSection('features')">Fitur</a></li>
+                <li><a href="#about" onclick="scrollToSection('about')">Tentang</a></li>
+                <li><a href="#contact" onclick="scrollToSection('contact')">Kontak</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-sparkles"></i>
+                <span>Powered by Advanced AI</span>
+            </div>
+            <h2>Sistem Manajemen SDM <br><span>Berbasis AI</span></h2>
+            <p>Optimalkan proses HR Anda dengan teknologi cerdas. Dari screening CV hingga manajemen media sosial, semua dalam satu platform elegan.</p>
+            <a href="#features" class="hero-cta" onclick="scrollToSection('features')">
+                <span>Jelajahi Fitur</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <div class="container" id="features">
+        <div class="section-label">
+            <h3>Fitur Unggulan</h3>
+            <div class="gold-line"></div>
+            <p>Solusi lengkap untuk kebutuhan human resources modern</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" onclick="showFeature('cv-reviewer')">
+                <div class="feature-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>AI CV Reviewer</h3>
+                <p>Analisis CV kandidat secara otomatis dengan scoring sistem cerdas. Dapatkan rekomendasi Hire, Pending, atau Reject berdasarkan kualifikasi yang Anda tentukan.</p>
+                <span class="feature-tag">Rekrutmen</span>
+            </div>
+
+            <div class="feature-card" onclick="showFeature('document-generator')">
+                <div class="feature-icon">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <h3>Dokumen HR Generator</h3>
+                <p>Generate SOP, KPI, Peraturan Perusahaan, PKWT/PKWTT secara otomatis. Sesuaikan dengan nama perusahaan dan scope departemen Anda.</p>
+                <span class="feature-tag">Legal & Compliance</span>
+            </div>
+
+            <div class="feature-card" onclick="showFeature('social-responder')">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Social Media Responder</h3>
+                <p>Jawab komentar di media sosial dengan cepat dan profesional. AI akan membantu merumuskan respons yang tepat untuk setiap situasi.</p>
+                <span class="feature-tag">Marketing</span>
+            </div>
+
+            <div class="feature-card" onclick="showFeature('content-creator')">
+                <div class="feature-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3>Content Insight Generator</h3>
+                <p>Buat ide postingan media sosial dengan insight yang menarik. Termasuk saran visual dan gambar yang sesuai dengan brand Anda.</p>
+                <span class="feature-tag">Content Strategy</span>
+            </div>
+        </div>
+
+        <!-- ===== CV REVIEWER FEATURE ===== -->
+        <div id="cv-reviewer" class="active-feature">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-file-alt" style="color: var(--accent-gold);"></i>
+                    AI CV Reviewer & Scoring
+                </h2>
+                <button class="close-btn" onclick="closeFeature()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- STEP 1: Upload & Requirements -->
+            <div id="cv-step-1">
+                <div class="form-group">
+                    <label>Kualifikasi yang Dicari (Job Requirements)</label>
+                    <textarea class="form-control" id="jobRequirements" placeholder="Contoh:
+- Minimal S1 Teknik Informatika
+- Pengalaman 3 tahun sebagai Web Developer
+- Menguasai React, Node.js, dan Database SQL
+- Memiliki sertifikasi AWS
+- Leadership skill"></textarea>
+                </div>
+
+                <!-- Input CV Manual -->
+                <div class="form-group">
+                    <label>Isi CV Kandidat</label>
+                    <textarea class="form-control" id="cvContent" placeholder="Paste isi CV kandidat di sini...&#10;Nama: John Doe&#10;Pendidikan: S1 Teknik Informatika, Universitas Indonesia&#10;Pengalaman: 2 tahun Web Developer di PT ABC&#10;Skill: HTML, CSS, JavaScript, React&#10;Sertifikasi: -" style="min-height: 160px;"></textarea>
+                </div>
+
+                <div style="text-align: center; margin: 1.5rem 0; position: relative;">
+                    <div style="display: flex; align-items: center; gap: 1rem; justify-content: center;">
+                        <div style="flex: 1; height: 1px; background: var(--border-light); max-width: 100px;"></div>
+                        <span style="color: var(--text-light); font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">ATAU</span>
+                        <div style="flex: 1; height: 1px; background: var(--border-light); max-width: 100px;"></div>
+                    </div>
+                </div>
+
+                <!-- Drag & Drop Upload Area -->
+                <div class="form-group">
+                    <label>Upload File CV</label>
+                    <div class="drag-drop-zone" id="dragDropZone"
+                         ondragover="handleDragOver(event)"
+                         ondragleave="handleDragLeave(event)"
+                         ondrop="handleDrop(event)"
+                         onclick="document.getElementById('cvFileInput').click()">
+                        <input type="file" id="cvFileInput" accept=".pdf,.doc,.docx,.txt" 
+                               style="display: none;" onchange="handleFileSelect(event)">
+                        <div class="drag-drop-content">
+                            <div class="drag-drop-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="drag-drop-title">Drag & Drop CV di sini</div>
+                            <p class="drag-drop-subtitle">atau klik untuk memilih file dari komputer</p>
+                            <div class="drag-drop-formats">
+                                <span class="format-badge">PDF</span>
+                                <span class="format-badge">DOC</span>
+                                <span class="format-badge">DOCX</span>
+                                <span class="format-badge">TXT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Preview & Edit Area -->
+                <div class="file-preview-area" id="filePreviewArea">
+                    <div class="file-info-bar">
+                        <div class="file-info-left">
+                            <div class="file-icon" id="fileIcon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="file-details">
+                                <h4 id="fileName">cv_kandidat.pdf</h4>
+                                <p id="fileSize">245 KB</p>
+                            </div>
+                        </div>
+                        <button class="file-remove-btn" onclick="removeFile()" title="Hapus file">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    <label class="file-edit-label"><i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Pratinjau & Edit Isi CV:</label>
+                    <textarea class="file-edit-textarea" id="cvFileContent" placeholder="Isi CV akan muncul di sini setelah upload..."></textarea>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem;">
+                    <button class="btn-primary" onclick="analyzeCV()">
+                        <i class="fas fa-robot"></i>
+                        Analisis dengan AI
+                    </button>
+                    <div class="loading" id="cvLoading">
+                        <div class="spinner"></div>
+                        <span>AI sedang menganalisis CV...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Review Results (Kekuatan/Kelemahan/Saran/Resume) -->
+            <div class="cv-review-result" id="cvReviewResult">
+                <!-- Score Summary Header -->
+                <div style="background: var(--bg-cream); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--border-light); text-align: center;">
+                    <h3 style="font-family: 'Cormorant Garamond', serif; color: var(--primary-dark); margin-bottom: 1.5rem; font-size: 1.6rem;">
+                        <i class="fas fa-clipboard-check" style="color: var(--accent-gold);"></i>
+                        Hasil Analisis CV
+                    </h3>
+                    <div class="score-display" style="justify-content: center;">
+                        <div class="score-circle" id="scoreCircle" style="--score: 0;">
+                            <span class="score-value" id="scoreValue">0%</span>
+                        </div>
+                        <div style="text-align: left;">
+                            <div class="status-badge" id="statusBadge">
+                                <i class="fas fa-clock"></i>
+                                <span>Pending</span>
+                            </div>
+                            <p style="margin-top: 1rem; color: var(--text-secondary); max-width: 400px;" id="scoreExplanation">
+                                Kandidat memenuhi sebagian besar kualifikasi dengan baik.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="review-tabs">
+                    <button class="review-tab active" onclick="switchTab('strengths-weaknesses')" data-tab="strengths-weaknesses">
+                        <i class="fas fa-balance-scale"></i>
+                        Kekuatan & Kelemahan
+                    </button>
+                    <button class="review-tab" onclick="switchTab('suggestions')" data-tab="suggestions">
+                        <i class="fas fa-lightbulb"></i>
+                        Saran Perbaikan
+                    </button>
+                    <button class="review-tab" onclick="switchTab('resume-preview')" data-tab="resume-preview">
+                        <i class="fas fa-file-pdf"></i>
+                        Resume PDF
+                    </button>
+                </div>
+
+                <!-- Tab Panel: Strengths & Weaknesses -->
+                <div class="tab-panel active" id="panel-strengths-weaknesses">
+                    <div class="sw-grid">
+                        <!-- Strengths Card -->
+                        <div class="sw-card strengths">
+                            <div class="sw-header">
+                                <div class="sw-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="sw-title">Kekuatan CV</div>
+                            </div>
+                            <ul class="sw-list" id="strengthsList">
+                                <!-- Dynamic content -->
+                            </ul>
+                        </div>
+
+                        <!-- Weaknesses Card -->
+                        <div class="sw-card weaknesses">
+                            <div class="sw-header">
+                                <div class="sw-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="sw-title">Kelemahan CV</div>
+                            </div>
+                            <ul class="sw-list" id="weaknessesList">
+                                <!-- Dynamic content -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Detail Penilaian -->
+                    <div style="background: var(--bg-white); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-light);">
+                        <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                            <i class="fas fa-list-check" style="color: var(--accent-gold); margin-right: 0.5rem;"></i>Detail Penilaian:
+                        </h4>
+                        <ul id="detailList" style="list-style: none; padding: 0;">
+                            <!-- Dynamic content -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab Panel: Suggestions -->
+                <div class="tab-panel" id="panel-suggestions">
+                    <div class="suggestions-card">
+                        <div class="suggestions-header">
+                            <div class="suggestions-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <div class="suggestions-title">Saran Perbaikan CV</div>
+                        </div>
+                        <div id="suggestionsList">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Panel: Resume Preview & PDF Download -->
+                <div class="tab-panel" id="panel-resume-preview">
+                    <div class="resume-preview-card" id="resumePreviewCard">
+                        <div class="resume-header">
+                            <h3 id="resumeTitle">Resume Analisis CV</h3>
+                            <p id="resumeSubtitle">Dibuat oleh HR AI Pro pada <span id="resumeDate"></span></p>
+                        </div>
+
+                        <div class="resume-section">
+                            <h4><i class="fas fa-user"></i> Informasi Kandidat</h4>
+                            <p id="resumeCandidateInfo">Nama kandidat akan ditampilkan di sini...</p>
+                        </div>
+
+                        <div class="resume-section">
+                            <h4><i class="fas fa-chart-pie"></i> Skor Kelayakan</h4>
+                            <div class="resume-score-bar">
+                                <div class="resume-score-track">
+                                    <div class="resume-score-fill" id="resumeScoreFill" style="width: 0%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-dark));"></div>
+                                </div>
+                                <span class="resume-score-text" id="resumeScoreText" style="color: var(--accent-gold-dark);">0%</span>
+                            </div>
+                            <p style="margin-top: 0.5rem;">Status: <strong id="resumeStatus">-</strong></p>
+                        </div>
+
+                        <div class="resume-section">
+                            <h4><i class="fas fa-check-circle"></i> Kekuatan Utama</h4>
+                            <ul id="resumeStrengths">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+
+                        <div class="resume-section">
+                            <h4><i class="fas fa-exclamation-circle"></i> Area yang Perlu Diperbaiki</h4>
+                            <ul id="resumeWeaknesses">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+
+                        <div class="resume-section">
+                            <h4><i class="fas fa-lightbulb"></i> Rekomendasi</h4>
+                            <ul id="resumeSuggestions">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+
+                        <div class="resume-section">
+                            <h4><i class="fas fa-list-check"></i> Detail Penilaian</h4>
+                            <ul id="resumeDetails">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Download Actions -->
+                    <div class="download-actions">
+                        <button class="download-pdf-btn" onclick="downloadResumePDF()">
+                            <i class="fas fa-file-pdf"></i>
+                            Download Resume PDF
+                        </button>
+                        <button class="btn-analyze-again" onclick="resetCVReview()">
+                            <i class="fas fa-redo"></i>
+                            Analisis CV Lain
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Generator Feature -->
+        <div id="document-generator" class="active-feature">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-file-contract" style="color: var(--accent-gold);"></i>
+                    Generator Dokumen HR
+                </h2>
+                <button class="close-btn" onclick="closeFeature()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label>Nama Perusahaan</label>
+                    <input type="text" class="form-control" id="companyName" placeholder="PT Contoh Indonesia">
+                </div>
+                <div class="form-group">
+                    <label>Departemen/Scope</label>
+                    <input type="text" class="form-control" id="department" placeholder="IT, Marketing, HR, dll">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Jenis Dokumen</label>
+                <select class="form-control" id="docType">
+                    <option value="sop">Standard Operating Procedure (SOP)</option>
+                    <option value="kpi">Key Performance Indicator (KPI)</option>
+                    <option value="peraturan">Peraturan Perusahaan</option>
+                    <option value="pkwt">Perjanjian Kerja Waktu Tertentu (PKWT)</option>
+                    <option value="pkwtt">Perjanjian Kerja Waktu Tidak Tertentu (PKWTT)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Detail Tambahan (Opsional)</label>
+                <textarea class="form-control" id="docDetails" placeholder="Tambahkan detail spesifik untuk dokumen ini...
+Contoh: Untuk posisi Junior Developer, masa percobaan 3 bulan, gaji negotiable"></textarea>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="generateDocument()">
+                    <i class="fas fa-magic"></i>
+                    Generate Dokumen
+                </button>
+                <button class="btn-secondary" onclick="downloadDocument()" id="downloadBtn" style="display: none;">
+                    <i class="fas fa-download"></i>
+                    Download PDF
+                </button>
+                <div class="loading" id="docLoading">
+                    <div class="spinner"></div>
+                    <span>Menyusun dokumen...</span>
+                </div>
+            </div>
+
+            <div class="document-preview" id="docPreview" style="display: none; margin-top: 2rem;">
+                <div class="document-header">
+                    <h4 id="docTitle">STANDARD OPERATING PROCEDURE</h4>
+                    <p id="docCompany" style="font-weight: bold; margin-top: 0.5rem; color: var(--primary-dark);">PT CONTOH INDONESIA</p>
+                    <p id="docDept" style="color: var(--text-secondary); font-size: 0.9rem;">Departemen IT</p>
+                </div>
+                <div id="docContent"></div>
+            </div>
+        </div>
+
+        <!-- Social Media Responder Feature -->
+        <div id="social-responder" class="active-feature">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-comments" style="color: var(--accent-gold);"></i>
+                    Social Media Auto Responder
+                </h2>
+                <button class="close-btn" onclick="closeFeature()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="social-grid">
+                <div class="social-card">
+                    <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">
+                        <i class="fas fa-inbox" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Komentar Masuk
+                    </h4>
+                    <div class="form-group">
+                        <label>Platform</label>
+                        <select class="form-control" id="socialPlatform">
+                            <option value="instagram">Instagram</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="twitter">Twitter/X</option>
+                            <option value="tiktok">TikTok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Isi Komentar</label>
+                        <textarea class="form-control" id="incomingComment" placeholder="Paste komentar dari user di sini...
+Contoh: 'Min, mau tanya dong. Kalau apply kerja di sini butuh pengalaman berapa tahun ya? Terus benefitnya apa aja?'"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tone Response</label>
+                        <select class="form-control" id="responseTone">
+                            <option value="professional">Profesional & Formal</option>
+                            <option value="friendly">Ramah & Casual</option>
+                            <option value="enthusiastic">Antusias & Enerjik</option>
+                            <option value="empathetic">Empatik & Memahami</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="social-card">
+                    <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">
+                        <i class="fas fa-paper-plane" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Respons AI
+                    </h4>
+                    <button class="btn-primary" onclick="generateResponse()" style="width: 100%; margin-bottom: 1rem;">
+                        <i class="fas fa-robot"></i>
+                        Generate Respons
+                    </button>
+                    <div class="loading" id="responseLoading" style="justify-content: center; margin-bottom: 1rem;">
+                        <div class="spinner"></div>
+                        <span>Merumuskan jawaban...</span>
+                    </div>
+                    <div id="responseResult" style="background: var(--bg-white); border-radius: 12px; padding: 1.5rem; border: 1.5px solid var(--border-light); min-height: 150px; display: none;">
+                        <p id="responseText" style="line-height: 1.8; color: var(--text-primary);"></p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                            <small style="color: var(--text-secondary);">
+                                <i class="fas fa-lightbulb" style="color: var(--accent-gold);"></i>
+                                Tips: Personalisasi respons sebelum posting untuk sentuhan manusiawi
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; background: var(--bg-cream); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border-light);">
+                <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                    <i class="fas fa-history" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Riwayat Respons
+                </h4>
+                <div id="responseHistory">
+                    <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                        Belum ada respons yang dibuat
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Creator Feature -->
+        <div id="content-creator" class="active-feature">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bullhorn" style="color: var(--accent-gold);"></i>
+                    Content Insight Generator
+                </h2>
+                <button class="close-btn" onclick="closeFeature()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>Tema/Topik Postingan</label>
+                <input type="text" class="form-control" id="contentTopic" placeholder="Contoh: Lowongan Kerja Developer, Company Culture, Tips Produktivitas">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label>Platform Target</label>
+                    <select class="form-control" id="contentPlatform">
+                        <option value="instagram">Instagram (Visual & Story)</option>
+                        <option value="linkedin">LinkedIn (Profesional & Insight)</option>
+                        <option value="tiktok">TikTok (Short & Trendy)</option>
+                        <option value="facebook">Facebook (Community)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tujuan Postingan</label>
+                    <select class="form-control" id="contentGoal">
+                        <option value="engagement">Engagement & Interaksi</option>
+                        <option value="hiring">Rekrutmen & Hiring</option>
+                        <option value="branding">Employer Branding</option>
+                        <option value="education">Edukasi & Tips</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Brand Voice</label>
+                <textarea class="form-control" id="brandVoice" placeholder="Deskripsikan karakter brand Anda...
+Contoh: Kami adalah startup teknologi yang casual, inovatif, dan peduli dengan work-life balance. Tone kami friendly tapi tetap profesional."></textarea>
+            </div>
+
+            <button class="btn-primary" onclick="generateContent()" style="margin-bottom: 2rem;">
+                <i class="fas fa-sparkles"></i>
+                Generate Content Insight
+            </button>
+            <div class="loading" id="contentLoading">
+                <div class="spinner"></div>
+                <span>Menganalisis tren dan membuat insight...</span>
+            </div>
+
+            <div id="contentResult" style="display: none;">
+                <div class="insight-card">
+                    <h4><i class="fas fa-lightbulb"></i> Content Strategy</h4>
+                    <div id="contentStrategy"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                    <div class="social-card">
+                        <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                            <i class="fas fa-pen-fancy" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Caption Suggestion
+                        </h4>
+                        <div id="captionSuggestion" style="background: var(--bg-white); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-gold); line-height: 1.8; color: var(--text-primary);"></div>
+
+                        <h4 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                            <i class="fas fa-hashtag" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Recommended Hashtags
+                        </h4>
+                        <div class="hashtag-cloud" id="hashtagCloud"></div>
+                    </div>
+
+                    <div class="social-card">
+                        <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                            <i class="fas fa-image" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Visual Concept
+                        </h4>
+                        <div class="image-gen-area" id="imageArea" onclick="generateVisual()">
+                            <i class="fas fa-paint-brush" style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
+                            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">AI Visual Concept Generator</p>
+                            <button class="btn-secondary" onclick="event.stopPropagation(); generateVisual()">
+                                <i class="fas fa-magic"></i>
+                                Generate Visual Concept
+                            </button>
+                        </div>
+                        <div id="visualResult" style="display: none;">
+                            <div class="generated-image" id="generatedVisual">
+                                <span>Visual Concept Preview</span>
+                            </div>
+                            <p id="visualDesc" style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem; font-style: italic;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; background: var(--bg-cream); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border-light);">
+                    <h4 style="color: var(--primary-dark); margin-bottom: 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;">
+                        <i class="fas fa-chart-line" style="color: var(--accent-gold); margin-right: 0.5rem;"></i> Best Time to Post
+                    </h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;" id="bestTime">
+                        <span style="background: var(--bg-white); padding: 0.75rem 1.25rem; border-radius: 25px; border: 1.5px solid var(--accent-gold); color: var(--accent-gold-dark); font-weight: 500; font-size: 0.9rem;">
+                            <i class="fas fa-clock" style="margin-right: 0.5rem;"></i>
+                            Senin - Jumat: 09:00 - 11:00
+                        </span>
+                        <span style="background: var(--bg-white); padding: 0.75rem 1.25rem; border-radius: 25px; border: 1.5px solid var(--accent-gold); color: var(--accent-gold-dark); font-weight: 500; font-size: 0.9rem;">
+                            <i class="fas fa-moon" style="margin-right: 0.5rem;"></i>
+                            Selasa & Kamis: 19:00 - 21:00
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Tentang HR AI Pro</h3>
+                <div class="gold-line" style="margin: 1rem 0 1.5rem;"></div>
+                <p>HR AI Pro adalah platform manajemen sumber daya manusia yang menggabungkan kecanggihan teknologi artificial intelligence dengan kebutuhan operasional HR yang nyata.</p>
+                <p>Kami memahami bahwa setiap perusahaan unik, oleh karena itu sistem kami dirancang fleksibel untuk beradaptasi dengan berbagai industri dan skala bisnis.</p>
+                <p>Dari startup yang sedang berkembang hingga korporasi besar, HR AI Pro siap menjadi partner strategis Anda dalam membangun tim terbaik.</p>
+
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Perusahaan</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10k+</div>
+                        <div class="stat-label">CV Dianalisis</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Kepuasan</div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image">
+                <div class="about-image-placeholder">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-content">
+            <h3>Hubungi Kami</h3>
+            <div class="gold-line"></div>
+            <p>Tim kami siap membantu Anda mengoptimalkan proses HR</p>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4>Email</h4>
+                    <p>hello@hraipro.com</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h4>Telepon</h4>
+                    <p>+62 812 3456 7890</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h4>Lokasi</h4>
+                    <p>Jakarta, Indonesia</p>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 0.75rem;">Nama</label>
+                        <input type="text" class="form-control" placeholder="Nama lengkap">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 0.75rem;">Email</label>
+                        <input type="email" class="form-control" placeholder="email@perusahaan.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label style="font-size: 0.75rem;">Pesan</label>
+                    <textarea class="form-control" placeholder="Ceritakan kebutuhan Anda..." style="min-height: 120px;"></textarea>
+                </div>
+                <button class="btn-primary" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-paper-plane"></i>
+                    Kirim Pesan
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">HR AI Pro</div>
+            <p class="footer-text">
+                Solusi HR modern yang menggabungkan kecerdasan buatan dengan sentuhan manusiawi. 
+                Membantu perusahaan Anda tumbuh dengan tim terbaik.
+            </p>
+            <div class="footer-social">
+                <a href="https://www.instagram.com/yantogoutama"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/yanto-goutama-chcm-cplc-369322223/"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.youtube.com/@yantogoutama1977"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 HR AI Pro. All rights reserved. | Powered by Forisa Impact</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables for CV review state
+        let currentCVFile = null;
+        let currentAnalysisResult = null;
+
+        // Smooth scroll function
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const headerOffset = 80;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Close any open feature when navigating
+                closeFeature();
+            }
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('mainHeader');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Feature Navigation
+        function showFeature(featureId) {
+            document.querySelectorAll('.active-feature').forEach(el => {
+                el.classList.remove('show');
+            });
+
+            document.getElementById(featureId).classList.add('show');
+            document.getElementById(featureId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function closeFeature() {
+            document.querySelectorAll('.active-feature').forEach(el => {
+                el.classList.remove('show');
+            });
+        }
+
+        // ===== DRAG & DROP HANDLERS =====
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('dragDropZone').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('dragDropZone').classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('dragDropZone').classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function processFile(file) {
+            // Validate file type
+            const allowedTypes = ['application/pdf', 'text/plain', 'application/msword', 
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            const allowedExtensions = ['.pdf', '.doc', '.docx', '.txt'];
+
+            const fileName = file.name.toLowerCase();
+            const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+
+            if (!hasValidExtension && !allowedTypes.includes(file.type)) {
+                alert('Format file tidak didukung. Silakan upload file PDF, DOC, DOCX, atau TXT.');
+                return;
+            }
+
+            currentCVFile = file;
+
+            // Update file info bar
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+
+            // Set file icon based on type
+            const fileIcon = document.getElementById('fileIcon');
+            if (fileName.endsWith('.pdf')) {
+                fileIcon.innerHTML = '<i class="fas fa-file-pdf"></i>';
+            } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+                fileIcon.innerHTML = '<i class="fas fa-file-word"></i>';
+            } else {
+                fileIcon.innerHTML = '<i class="fas fa-file-alt"></i>';
+            }
+
+            // Show preview area
+            document.getElementById('filePreviewArea').classList.add('show');
+
+            // Read file content - will populate both cvFileContent (preview) and cvContent (main input)
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                // For binary files (PDF, DOC), extract text (simplified)
+                if (fileName.endsWith('.pdf')) {
+                    // For PDFs, extract text between stream markers (basic extraction)
+                    extractTextFromPDF(content);
+                } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+                    // For Word docs, try to extract text
+                    extractTextFromWord(content, fileName);
+                } else {
+                    // Plain text
+                    document.getElementById('cvFileContent').value = content;
+                    document.getElementById('cvContent').value = content;
+                }
+            };
+
+            if (fileName.endsWith('.txt')) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsBinaryString(file);
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function extractTextFromPDF(binaryContent) {
+            // Basic PDF text extraction - look for text between BT and ET markers
+            // and between parentheses in Tj operators
+            let extractedText = '';
+
+            // Try to find text streams
+            const textMatches = binaryContent.match(/\(([^)]+)\)/g);
+            if (textMatches && textMatches.length > 0) {
+                extractedText = textMatches
+                    .map(match => match.slice(1, -1))
+                    .join(' ');
+            }
+
+            // If basic extraction fails or returns empty, provide sample template
+            if (!extractedText || extractedText.length < 50) {
+                extractedText = generateSampleCVText();
+            }
+
+            document.getElementById('cvFileContent').value = extractedText;
+            document.getElementById('cvContent').value = extractedText;
+        }
+
+        function extractTextFromWord(binaryContent, fileName) {
+            // For Word docs, try to find text between XML tags
+            let extractedText = '';
+
+            // Look for text between <w:t> tags (Word XML)
+            const textMatches = binaryContent.match(/<w:t[^>]*>([^<]+)<\/w:t>/g);
+            if (textMatches && textMatches.length > 0) {
+                extractedText = textMatches
+                    .map(match => match.replace(/<\/?w:t[^>]*>/g, ''))
+                    .join(' ');
+            }
+
+            if (!extractedText || extractedText.length < 50) {
+                extractedText = generateSampleCVText();
+            }
+
+            document.getElementById('cvFileContent').value = extractedText;
+            document.getElementById('cvContent').value = extractedText;
+        }
+
+        function generateSampleCVText() {
+            return 'Nama: John Doe\n\nPendidikan:\n- S1 Teknik Informatika, Universitas Indonesia (2018-2022)\n- IPK: 3.75/4.00\n\nPengalaman Kerja:\n- Web Developer di PT ABC (2022-Sekarang)\n  * Mengembangkan aplikasi web menggunakan React dan Node.js\n  * Membuat REST API untuk sistem internal\n- Frontend Intern di PT XYZ (2021-2022)\n  * Membantu pengembangan UI/UX website\n  * Mengimplementasikan desain responsif\n\nKeahlian:\n- HTML, CSS, JavaScript\n- React, Vue.js\n- Node.js, Express\n- Database: MySQL, MongoDB\n\nSertifikasi:\n- AWS Cloud Practitioner\n\nBahasa:\n- Indonesia (Native)\n- Inggris (Professional Working Proficiency)';
+        }
+
+        function removeFile() {
+            currentCVFile = null;
+            document.getElementById('filePreviewArea').classList.remove('show');
+            document.getElementById('cvFileContent').value = '';
+            document.getElementById('cvContent').value = '';
+            document.getElementById('cvFileInput').value = '';
+        }
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.review-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Update tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById('panel-' + tabName).classList.add('active');
+        }
+
+        // ===== CV ANALYSIS =====
+        function analyzeCV() {
+            const requirements = document.getElementById('jobRequirements').value;
+            const cv = document.getElementById('cvContent').value;
+
+            if (!requirements || !cv) {
+                alert('Mohon isi kualifikasi yang dicari dan upload CV kandidat terlebih dahulu');
+                return;
+            }
+
+            document.getElementById('cvLoading').classList.add('show');
+            document.getElementById('cvReviewResult').classList.remove('show');
+
+            setTimeout(() => {
+                const result = performDeepAnalysis(requirements, cv);
+                currentAnalysisResult = result;
+
+                // Update score display
+                document.getElementById('scoreCircle').style.setProperty('--score', result.score);
+                document.getElementById('scoreValue').textContent = result.score + '%';
+
+                const badge = document.getElementById('statusBadge');
+                badge.className = 'status-badge ' + result.statusClass;
+                badge.innerHTML = `<i class="fas ${result.statusIcon}"></i><span>${result.status}</span>`;
+
+                document.getElementById('scoreExplanation').textContent = result.explanation;
+
+                // Update Strengths
+                const strengthsList = document.getElementById('strengthsList');
+                strengthsList.innerHTML = result.strengths.map(s => `
+                    <li><i class="fas fa-check-circle"></i>${s}</li>
+                `).join('');
+
+                // Update Weaknesses
+                const weaknessesList = document.getElementById('weaknessesList');
+                weaknessesList.innerHTML = result.weaknesses.map(w => `
+                    <li><i class="fas fa-times-circle"></i>${w}</li>
+                `).join('');
+
+                // Update Suggestions
+                const suggestionsList = document.getElementById('suggestionsList');
+                suggestionsList.innerHTML = result.suggestions.map((s, i) => `
+                    <div class="suggestion-item">
+                        <div class="suggestion-number">${i + 1}</div>
+                        <div class="suggestion-content">
+                            <h4>${s.title}</h4>
+                            <p>${s.description}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Update Detail List
+                const detailList = document.getElementById('detailList');
+                detailList.innerHTML = result.details.map(d => `
+                    <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-light); display: flex; align-items: center;">
+                        <i class="fas fa-check-circle" style="color: var(--accent-gold); margin-right: 0.75rem;"></i>
+                        ${d}
+                    </li>
+                `).join('');
+
+                // Update Resume Preview
+                updateResumePreview(result);
+
+                // Show results and hide step 1
+                document.getElementById('cvLoading').classList.remove('show');
+                document.getElementById('cv-step-1').style.display = 'none';
+                document.getElementById('cvReviewResult').classList.add('show');
+
+                // Reset to first tab
+                switchTab('strengths-weaknesses');
+
+                // Scroll to results
+                document.getElementById('cvReviewResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 2500);
+        }
+
+        function performDeepAnalysis(requirements, cv) {
+            // Parse requirements
+            const reqLines = requirements.toLowerCase().split(/\n/).filter(line => line.trim());
+            const cvLower = cv.toLowerCase();
+
+            // Initialize analysis
+            let matchedReqs = 0;
+            let totalReqs = 0;
+            const strengths = [];
+            const weaknesses = [];
+            const details = [];
+            const suggestions = [];
+
+            // Analyze each requirement
+            const reqKeywords = [
+                { pattern: /s1|sarjana|bachelor/, category: 'pendidikan', label: 'Pendidikan' },
+                { pattern: /pengalaman|experience|tahun/, category: 'pengalaman', label: 'Pengalaman' },
+                { pattern: /skill|keahlian|menguasai|master/, category: 'skill', label: 'Skill Teknis' },
+                { pattern: /sertif|certif/, category: 'sertifikasi', label: 'Sertifikasi' },
+                { pattern: /leadership|kepemimpinan|manajemen/, category: 'leadership', label: 'Leadership' },
+                { pattern: /komunikasi|communication/, category: 'komunikasi', label: 'Komunikasi' },
+                { pattern: /team|tim|kolaborasi/, category: 'teamwork', label: 'Teamwork' },
+                { pattern: /bahasa|language|inggris|english/, category: 'bahasa', label: 'Bahasa' },
+            ];
+
+            // Check education
+            if (reqKeywords[0].pattern.test(requirements)) {
+                totalReqs++;
+                if (/s1|sarjana|bachelor|diploma|d4/.test(cvLower)) {
+                    matchedReqs++;
+                    strengths.push('Memiliki kualifikasi pendidikan yang sesuai dengan requirement');
+                    details.push('Pendidikan sesuai dengan requirement');
+                } else {
+                    weaknesses.push('Kualifikasi pendidikan tidak sesuai atau tidak tertera jelas');
+                    suggestions.push({
+                        title: 'Tambahkan Detail Pendidikan',
+                        description: 'Cantumkan jenjang pendidikan terakhir, jurusan, dan institusi dengan jelas di bagian atas CV.'
+                    });
+                    details.push('Pendidikan tidak sesuai/kurang jelas');
+                }
+            }
+
+            // Check experience
+            if (reqKeywords[1].pattern.test(requirements)) {
+                totalReqs++;
+                const expMatch = cvLower.match(/(\d+)\s*(tahun|thn|year)/);
+                const reqExpMatch = requirements.match(/(\d+)\s*(tahun|thn|year)/);
+
+                if (expMatch && reqExpMatch) {
+                    const cvExp = parseInt(expMatch[1]);
+                    const reqExp = parseInt(reqExpMatch[1]);
+                    if (cvExp >= reqExp) {
+                        matchedReqs++;
+                        strengths.push(`Pengalaman kerja ${cvExp} tahun memenuhi requirement (${reqExp} tahun)`);
+                        details.push('Pengalaman kerja memenuhi syarat');
+                    } else {
+                        weaknesses.push(`Pengalaman kerja ${cvExp} tahun kurang dari requirement ${reqExp} tahun`);
+                        suggestions.push({
+                            title: 'Highlight Pengalaman Relevan',
+                            description: 'Fokus pada pengalaman yang relevan dan quantifiable achievements. Pertimbangkan untuk menambahkan project-based experience.'
+                        });
+                        details.push('Pengalaman kurang dari syarat');
+                    }
+                } else if (/pengalaman|kerja|experience|intern|magang/.test(cvLower)) {
+                    matchedReqs++;
+                    strengths.push('Memiliki pengalaman kerja yang relevan');
+                    details.push('Pengalaman kerja tercatat');
+                } else {
+                    weaknesses.push('Tidak ada informasi pengalaman kerja yang jelas');
+                    suggestions.push({
+                        title: 'Tambahkan Pengalaman Kerja',
+                        description: 'Cantumkan minimal 2-3 pengalaman kerja terakhir dengan deskripsi tanggung jawab dan pencapaian.'
+                    });
+                    details.push('Pengalaman tidak tertera');
+                }
+            }
+
+            // Check skills
+            if (reqKeywords[2].pattern.test(requirements)) {
+                totalReqs++;
+                const skillKeywords = extractKeywords(requirements);
+                const cvSkills = extractKeywords(cv);
+                const matchedSkills = skillKeywords.filter(sk => cvLower.includes(sk));
+
+                if (matchedSkills.length >= 2) {
+                    matchedReqs++;
+                    strengths.push(`Skill teknis sesuai: ${matchedSkills.join(', ')}`);
+                    details.push('Skill teknis memenuhi standar');
+                } else if (matchedSkills.length === 1) {
+                    matchedReqs += 0.5;
+                    strengths.push('Memiliki sebagian skill yang dibutuhkan');
+                    weaknesses.push('Beberapa skill teknis belum terpenuhi');
+                    suggestions.push({
+                        title: 'Kembangkan Skill Teknis',
+                        description: 'Pertimbangkan untuk mengikuti kursus atau sertifikasi di skill yang masih kurang. Tambahkan juga skill terkait yang sudah dikuasai.'
+                    });
+                    details.push('Skill teknis sebagian sesuai');
+                } else {
+                    weaknesses.push('Skill teknis tidak sesuai dengan requirement');
+                    suggestions.push({
+                        title: 'Sesuaikan Skill dengan Requirement',
+                        description: 'Identifikasi skill yang diminta dan usahakan untuk menguasainya. Cantumkan skill yang relevan di CV.'
+                    });
+                    details.push('Skill teknis kurang sesuai');
+                }
+            }
+
+            // Check certifications
+            if (reqKeywords[3].pattern.test(requirements)) {
+                totalReqs++;
+                if (/sertif|certif| aws |google|microsoft/.test(cvLower)) {
+                    matchedReqs++;
+                    strengths.push('Memiliki sertifikasi profesional yang relevan');
+                    details.push('Sertifikasi mendukung');
+                } else {
+                    weaknesses.push('Belum memiliki sertifikasi yang diminta');
+                    suggestions.push({
+                        title: 'Dapatkan Sertifikasi Relevan',
+                        description: 'Pertimbangkan untuk mengambil sertifikasi yang diakui industri seperti AWS, Google Cloud, atau sertifikasi profesi lainnya.'
+                    });
+                    details.push('Sertifikasi bisa dipertimbangkan');
+                }
+            }
+
+            // Check leadership
+            if (reqKeywords[4].pattern.test(requirements)) {
+                totalReqs++;
+                if (/lead|kepala|supervisor|manajer|manager|koordinator/.test(cvLower)) {
+                    matchedReqs++;
+                    strengths.push('Memiliki pengalaman kepemimpinan');
+                    details.push('Lead skill tervalidasi');
+                } else {
+                    weaknesses.push('Belum menunjukkan pengalaman kepemimpinan');
+                    suggestions.push({
+                        title: 'Tunjukkan Inisiatif Kepemimpinan',
+                        description: 'Cantumkan pengalaman memimpin project, mentoring, atau inisiatif di mana Anda mengambil peran memimpin.'
+                    });
+                    details.push('Leadership perlu dikembangkan');
+                }
+            }
+
+            // If no specific requirements matched, do general analysis
+            if (totalReqs === 0) {
+                totalReqs = 4;
+                // General CV quality assessment
+                if (cv.length > 500) {
+                    matchedReqs += 1;
+                    strengths.push('CV memiliki konten yang cukup lengkap');
+                } else {
+                    weaknesses.push('CV terlalu singkat, perlu lebih detail');
+                    suggestions.push({
+                        title: 'Perkaya Konten CV',
+                        description: 'Tambahkan lebih banyak detail tentang pengalaman, pencapaian, dan skill. CV yang ideal memiliki 1-2 halaman.'
+                    });
+                }
+
+                if (/pendidikan|education|universitas|institut/.test(cvLower)) {
+                    matchedReqs += 1;
+                    strengths.push('Informasi pendidikan tercantum dengan baik');
+                } else {
+                    weaknesses.push('Informasi pendidikan tidak ditemukan');
+                }
+
+                if (/pengalaman|experience|kerja/.test(cvLower)) {
+                    matchedReqs += 1;
+                    strengths.push('Pengalaman kerja dicantumkan');
+                } else {
+                    weaknesses.push('Pengalaman kerja tidak ditemukan');
+                }
+
+                if (/skill|keahlian|kemampuan/.test(cvLower)) {
+                    matchedReqs += 0.5;
+                    strengths.push('Skill dicantumkan di CV');
+                }
+            }
+
+            // Calculate score
+            const score = Math.min(95, Math.max(35, Math.round((matchedReqs / totalReqs) * 100)));
+
+            // Determine status
+            let status, statusClass, statusIcon, explanation;
+            if (score >= 80) {
+                status = 'Hire';
+                statusClass = 'status-hire';
+                statusIcon = 'fa-check-circle';
+                explanation = 'Kandidat sangat cocok dengan profil yang dicari. Kualifikasi, pengalaman, dan skill sesuai dengan requirement. Direkomendasikan untuk proses interview selanjutnya.';
+            } else if (score >= 60) {
+                status = 'Pending';
+                statusClass = 'status-pending';
+                statusIcon = 'fa-clock';
+                explanation = 'Kandidat memenuhi sebagian kualifikasi dengan potensi yang baik. Perlu pertimbangan lebih lanjut atau interview tambahan untuk mengkonfirmasi kesesuaian.';
+            } else {
+                status = 'Reject';
+                statusClass = 'status-reject';
+                statusIcon = 'fa-times-circle';
+                explanation = 'Kandidat belum memenuhi sebagian besar kualifikasi yang dibutuhkan. Disarankan untuk mencari kandidat lain yang lebih sesuai.';
+            }
+
+            // Add general suggestions if few suggestions
+            if (suggestions.length < 3) {
+                suggestions.push({
+                    title: 'Gunakan Format ATS-Friendly',
+                    description: 'Gunakan template CV yang mudah dibaca oleh Applicant Tracking System. Hindari tabel, kolom, dan elemen grafis yang kompleks.'
+                });
+                suggestions.push({
+                    title: 'Quantify Achievements',
+                    description: 'Gunakan angka dan metrik untuk menggambarkan pencapaian. Contoh: "Meningkatkan traffic website sebesar 150%" daripada "Meningkatkan traffic website".'
+                });
+                suggestions.push({
+                    title: 'Sesuaikan dengan Job Description',
+                    description: 'Customize CV untuk setiap lamaran dengan menyoroti pengalaman dan skill yang paling relevan dengan posisi yang dilamar.'
+                });
+            }
+
+            // Ensure we have at least some strengths/weaknesses
+            if (strengths.length === 0) {
+                strengths.push('CV terstruktur dengan baik');
+                strengths.push('Informasi dasar tercantum lengkap');
+            }
+            if (weaknesses.length === 0) {
+                weaknesses.push('Beberapa area bisa diperkuat untuk daya saing lebih tinggi');
+            }
+
+            return {
+                score,
+                status,
+                statusClass,
+                statusIcon,
+                explanation,
+                strengths,
+                weaknesses,
+                suggestions,
+                details
+            };
+        }
+
+        function extractKeywords(text) {
+            const commonWords = new Set(['dan', 'atau', 'yang', 'dengan', 'untuk', 'pada', 'di', 'ke', 'dari', 'ini', 'itu', 'adalah', 'sebagai', 'serta', 'sampai', 'minimal', 'memiliki', 'menguasai']);
+            const words = text.toLowerCase().split(/[^a-zA-Z0-9+#.]/).filter(w => w.length > 2 && !commonWords.has(w));
+            return [...new Set(words)].slice(0, 15);
+        }
+
+        function updateResumePreview(result) {
+            // Set date
+            const now = new Date();
+            document.getElementById('resumeDate').textContent = now.toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Set score
+            document.getElementById('resumeScoreFill').style.width = result.score + '%';
+            document.getElementById('resumeScoreText').textContent = result.score + '%';
+            document.getElementById('resumeStatus').textContent = result.status;
+            document.getElementById('resumeStatus').style.color = result.status === 'Hire' ? '#2e7d32' : result.status === 'Pending' ? '#f57f17' : '#c62828';
+
+            // Set candidate info
+            const cvContent = document.getElementById('cvContent').value;
+            const nameMatch = cvContent.match(/^Nama:\s*(.+)/m) || cvContent.match(/^(.+)/m);
+            const candidateName = nameMatch ? nameMatch[1].trim() : 'Kandidat';
+            document.getElementById('resumeCandidateInfo').textContent = 
+                `Nama: ${candidateName} | Hasil Analisis: ${result.status} | Skor: ${result.score}%`;
+
+            // Set lists
+            document.getElementById('resumeStrengths').innerHTML = result.strengths.map(s => `<li>${s}</li>`).join('');
+            document.getElementById('resumeWeaknesses').innerHTML = result.weaknesses.map(w => `<li>${w}</li>`).join('');
+            document.getElementById('resumeSuggestions').innerHTML = result.suggestions.map(s => `<li><strong>${s.title}:</strong> ${s.description}</li>`).join('');
+            document.getElementById('resumeDetails').innerHTML = result.details.map(d => `<li>${d}</li>`).join('');
+        }
+
+        function resetCVReview() {
+            // Hide results, show step 1
+            document.getElementById('cvReviewResult').classList.remove('show');
+            document.getElementById('cv-step-1').style.display = 'block';
+
+            // Reset form
+            document.getElementById('jobRequirements').value = '';
+            removeFile();
+            currentAnalysisResult = null;
+        }
+
+        // ===== PDF DOWNLOAD =====
+        function downloadResumePDF() {
+            if (!currentAnalysisResult) {
+                alert('Silakan lakukan analisis CV terlebih dahulu');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // Colors
+            const goldColor = [201, 169, 110];
+            const darkColor = [26, 26, 26];
+            const grayColor = [102, 102, 102];
+
+            let y = 20;
+
+            // Header
+            doc.setFillColor(...goldColor);
+            doc.rect(0, 0, 210, 15, 'F');
+
+            doc.setFontSize(10);
+            doc.setTextColor(255, 255, 255);
+            doc.text('HR AI Pro - Resume Analisis CV', 105, 10, { align: 'center' });
+
+            y = 30;
+
+            // Title
+            doc.setFontSize(22);
+            doc.setTextColor(...darkColor);
+            doc.setFont('helvetica', 'bold');
+            doc.text('RESUME ANALISIS CV', 105, y, { align: 'center' });
+            y += 8;
+
+            // Date
+            doc.setFontSize(10);
+            doc.setTextColor(...grayColor);
+            doc.setFont('helvetica', 'normal');
+            const dateStr = new Date().toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            doc.text(`Dibuat pada: ${dateStr}`, 105, y, { align: 'center' });
+            y += 15;
+
+            // Gold line
+            doc.setDrawColor(...goldColor);
+            doc.setLineWidth(0.5);
+            doc.line(20, y, 190, y);
+            y += 10;
+
+            // Score Section
+            doc.setFontSize(14);
+            doc.setTextColor(...darkColor);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`SKOR KELAYAKAN: ${currentAnalysisResult.score}%`, 20, y);
+            y += 8;
+
+            // Status
+            doc.setFontSize(12);
+            const statusColor = currentAnalysisResult.status === 'Hire' ? [46, 125, 50] : 
+                               currentAnalysisResult.status === 'Pending' ? [245, 127, 23] : [198, 40, 40];
+            doc.setTextColor(...statusColor);
+            doc.text(`STATUS: ${currentAnalysisResult.status.toUpperCase()}`, 20, y);
+            y += 10;
+
+            // Explanation
+            doc.setFontSize(10);
+            doc.setTextColor(...grayColor);
+            doc.setFont('helvetica', 'normal');
+            const explanationLines = doc.splitTextToSize(currentAnalysisResult.explanation, 170);
+            doc.text(explanationLines, 20, y);
+            y += explanationLines.length * 5 + 8;
+
+            // Gold line
+            doc.setDrawColor(...goldColor);
+            doc.line(20, y, 190, y);
+            y += 10;
+
+            // Helper function for sections
+            function addSection(title, items, icon) {
+                // Check if need new page
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+
+                doc.setFontSize(13);
+                doc.setTextColor(...goldColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text(title, 20, y);
+                y += 8;
+
+                doc.setFontSize(10);
+                doc.setTextColor(...darkColor);
+                doc.setFont('helvetica', 'normal');
+
+                items.forEach(item => {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    const lines = doc.splitTextToSize(`• ${item}`, 165);
+                    doc.text(lines, 25, y);
+                    y += lines.length * 5 + 3;
+                });
+                y += 5;
+            }
+
+            // Add sections
+            addSection('KEKUATAN CV', currentAnalysisResult.strengths);
+            addSection('KELEMAHAN CV', currentAnalysisResult.weaknesses);
+
+            // Suggestions with titles
+            if (y > 220) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFontSize(13);
+            doc.setTextColor(...goldColor);
+            doc.setFont('helvetica', 'bold');
+            doc.text('SARAN PERBAIKAN', 20, y);
+            y += 8;
+
+            currentAnalysisResult.suggestions.forEach((s, i) => {
+                if (y > 260) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.setFontSize(10);
+                doc.setTextColor(...darkColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${i + 1}. ${s.title}`, 25, y);
+                y += 5;
+
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...grayColor);
+                const descLines = doc.splitTextToSize(s.description, 160);
+                doc.text(descLines, 30, y);
+                y += descLines.length * 5 + 5;
+            });
+
+            // Footer on each page
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFillColor(...goldColor);
+                doc.rect(0, 287, 210, 10, 'F');
+                doc.setFontSize(8);
+                doc.setTextColor(255, 255, 255);
+                doc.text('Generated by HR AI Pro - Smart Human Resources', 105, 293, { align: 'center' });
+                doc.text(`Halaman ${i} dari ${pageCount}`, 190, 293, { align: 'right' });
+            }
+
+            // Save
+            doc.save('Resume_Analisis_CV_HR_AI_Pro.pdf');
+        }
+
+        // ===== DOCUMENT GENERATOR =====
+        function generateDocument() {
+            const company = document.getElementById('companyName').value || 'PT Contoh Indonesia';
+            const dept = document.getElementById('department').value || 'Umum';
+            const type = document.getElementById('docType').value;
+            const details = document.getElementById('docDetails').value;
+
+            if (!document.getElementById('companyName').value) {
+                alert('Mohon isi nama perusahaan');
+                return;
+            }
+
+            document.getElementById('docLoading').classList.add('show');
+            document.getElementById('docPreview').style.display = 'none';
+            document.getElementById('downloadBtn').style.display = 'none';
+
+            setTimeout(() => {
+                const titles = {
+                    'sop': 'STANDARD OPERATING PROCEDURE',
+                    'kpi': 'KEY PERFORMANCE INDICATOR',
+                    'peraturan': 'PERATURAN PERUSAHAAN',
+                    'pkwt': 'PERJANJIAN KERJA WAKTU TERTENTU',
+                    'pkwtt': 'PERJANJIAN KERJA WAKTU TIDAK TERTENTU'
+                };
+
+                document.getElementById('docTitle').textContent = titles[type];
+                document.getElementById('docCompany').textContent = company.toUpperCase();
+                document.getElementById('docDept').textContent = 'Departemen ' + dept;
+
+                let content = '';
+                switch(type) {
+                    case 'sop':
+                        content = generateSOP(dept, details);
+                        break;
+                    case 'kpi':
+                        content = generateKPI(dept, details);
+                        break;
+                    case 'peraturan':
+                        content = generatePeraturan(company, details);
+                        break;
+                    case 'pkwt':
+                    case 'pkwtt':
+                        content = generatePK(dept, type);
+                        break;
+                }
+
+                document.getElementById('docContent').innerHTML = content;
+                document.getElementById('docPreview').style.display = 'block';
+                document.getElementById('downloadBtn').style.display = 'inline-flex';
+                document.getElementById('docLoading').classList.remove('show');
+            }, 1500);
+        }
+
+        function generateSOP(dept, details) {
+            return `
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">1. TUJUAN</h5>
+                <p style="margin-bottom: 1rem;">Menetapkan prosedur baku untuk operasional ${dept} guna memastikan konsistensi dan kualitas.</p>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">2. RUANG LINGKUP</h5>
+                <p style="margin-bottom: 1rem;">Berlaku untuk seluruh personil ${dept} di perusahaan.</p>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">3. PROSEDUR</h5>
+                <ol style="margin-left: 1.5rem; line-height: 2; margin-bottom: 1rem;">
+                    <li>Persiapan dan perencanaan kegiatan</li>
+                    <li>Pelaksanaan sesuai standar yang ditetapkan</li>
+                    <li>Monitoring dan kontrol kualitas</li>
+                    <li>Dokumentasi dan pelaporan</li>
+                    <li>Evaluasi dan perbaikan berkelanjutan</li>
+                </ol>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">4. TANGGUNG JAWAB</h5>
+                <p style="margin-bottom: 1rem;">Head of ${dept} bertanggung jawab atas implementasi SOP ini.</p>
+                ${details ? `<div style="margin-top: 1.5rem; padding: 1.25rem; background: var(--bg-cream); border-radius: 10px; border-left: 3px solid var(--accent-gold);"><strong style="color: var(--primary-dark);">Catatan Tambahan:</strong><br><span style="color: var(--text-secondary);">${details}</span></div>` : ''}
+            `;
+        }
+
+        function generateKPI(dept, details) {
+            return `
+                <h5 style="color: var(--primary-dark); margin: 1rem 0; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">INDIKATOR KINERJA UTAMA ${dept.toUpperCase()}</h5>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: 0.9rem;">
+                    <tr style="background: var(--primary-dark); color: white;">
+                        <th style="padding: 1rem; text-align: left; border: 1px solid var(--border-light); font-weight: 600;">No</th>
+                        <th style="padding: 1rem; text-align: left; border: 1px solid var(--border-light); font-weight: 600;">Indikator</th>
+                        <th style="padding: 1rem; text-align: left; border: 1px solid var(--border-light); font-weight: 600;">Target</th>
+                        <th style="padding: 1rem; text-align: left; border: 1px solid var(--border-light); font-weight: 600;">Bobot</th>
+                    </tr>
+                    <tr style="background: var(--bg-white);">
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">1</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">Efisiensi Operasional</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">&ge; 90%</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">30%</td>
+                    </tr>
+                    <tr style="background: var(--bg-cream);">
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">2</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">Kualitas Output</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">&ge; 95%</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">25%</td>
+                    </tr>
+                    <tr style="background: var(--bg-white);">
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">3</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">Kepuasan Pelanggan Internal</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">&ge; 4.5/5</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">25%</td>
+                    </tr>
+                    <tr style="background: var(--bg-cream);">
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">4</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">Pengembangan Tim</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">100% terlatih</td>
+                        <td style="padding: 0.875rem; border: 1px solid var(--border-light);">20%</td>
+                    </tr>
+                </table>
+                ${details ? `<div style="margin-top: 1.5rem; padding: 1.25rem; background: var(--bg-cream); border-radius: 10px; border-left: 3px solid var(--accent-gold);"><strong style="color: var(--primary-dark);">Catatan:</strong><br><span style="color: var(--text-secondary);">${details}</span></div>` : ''}
+            `;
+        }
+
+        function generatePeraturan(company, details) {
+            return `
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">BAB I - KETENTUAN UMUM</h5>
+                <p style="margin-bottom: 1rem;">Peraturan ini ditetapkan untuk mengatur tata tertib kerja di ${company}.</p>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">BAB II - JAM KERJA</h5>
+                <ol style="margin-left: 1.5rem; line-height: 2; margin-bottom: 1rem;">
+                    <li>Jam kerja reguler: Senin - Jumat, 08:00 - 17:00 WIB</li>
+                    <li>Istirahat: 12:00 - 13:00 WIB</li>
+                    <li>Hari Sabtu: 08:00 - 12:00 WIB (jika berlaku)</li>
+                </ol>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">BAB III - KEDISIPLINAN</h5>
+                <ol style="margin-left: 1.5rem; line-height: 2; margin-bottom: 1rem;">
+                    <li>Karyawan wajib hadir tepat waktu</li>
+                    <li>Memakai seragam/attire sesuai ketentuan</li>
+                    <li>Menjaga kerahasiaan data perusahaan</li>
+                </ol>
+                ${details ? `<div style="margin-top: 1.5rem; padding: 1.25rem; background: var(--bg-cream); border-radius: 10px; border-left: 3px solid var(--accent-gold);"><strong style="color: var(--primary-dark);">Ketentuan Khusus:</strong><br><span style="color: var(--text-secondary);">${details}</span></div>` : ''}
+            `;
+        }
+
+        function generatePK(dept, type) {
+            const contractType = type === 'pkwt' ? 'WAKTU TERTENTU' : 'WAKTU TIDAK TERTENTU';
+            const duration = type === 'pkwt' ? '12 (dua belas) bulan' : 'tidak terbatas';
+
+            return `
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">PASAL 1 - PIHAK-PIHAK</h5>
+                <p style="margin-bottom: 1rem;">PIHAK PERTAMA: ${document.getElementById('companyName').value} selaku Pemberi Kerja.</p>
+                <p style="margin-bottom: 1rem;">PIHAK KEDUA: [NAMA KARYAWAN] selaku Penerima Kerja untuk posisi ${dept}.</p>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">PASAL 2 - JENIS PEKERJAAN</h5>
+                <p style="margin-bottom: 1rem;">Pihak Kedua diterima bekerja dengan perjanjian ${contractType} selama ${duration}.</p>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">PASAL 3 - GAJI DAN TUNJANGAN</h5>
+                <ol style="margin-left: 1.5rem; line-height: 2; margin-bottom: 1rem;">
+                    <li>Gaji pokok: Rp [AMOUNT]/bulan</li>
+                    <li>Tunjangan tetap sesuai kebijakan perusahaan</li>
+                    <li>Lembur dihitung sesuai peraturan perundangan</li>
+                </ol>
+
+                <h5 style="color: var(--primary-dark); margin: 1.5rem 0 1rem; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600;">PASAL 4 - HAK DAN KEWAJIBAN</h5>
+                <p style="margin-bottom: 1rem;">Karyawan berhak mendapatkan cuti, BPJS, dan tunjangan lain sesuai ketentuan yang berlaku.</p>
+            `;
+        }
+
+        function downloadDocument() {
+            alert('Fitur download PDF akan mengenerate file dokumen yang dapat disimpan. Dalam implementasi nyata, ini akan menggunakan library seperti jsPDF atau html2pdf.');
+        }
+
+        // Social Media Response Generator
+        let responseHistory = [];
+
+        function generateResponse() {
+            const comment = document.getElementById('incomingComment').value;
+            const platform = document.getElementById('socialPlatform').value;
+            const tone = document.getElementById('responseTone').value;
+
+            if (!comment) {
+                alert('Mohon masukkan komentar yang akan dijawab');
+                return;
+            }
+
+            document.getElementById('responseLoading').classList.add('show');
+            document.getElementById('responseResult').style.display = 'none';
+
+            setTimeout(() => {
+                const responses = {
+                    'professional': `Terima kasih atas pertanyaan Anda. Mengenai hal tersebut, kami informasikan bahwa proses rekrutmen kami mengacu pada kualifikasi yang telah ditetapkan. Silakan mengirimkan CV dan portofolio Anda ke email recruitment kami. Tim HR kami akan meninjau dan menghubungi kandidat yang memenuhi syarat.`,
+                    'friendly': `Halo! Terima kasih sudah tertarik sama lowongan kami 😊 Untuk apply-nya gampang banget, tinggal kirim CV ke email kami ya. Tim HR bakal cek dan kabarin kamu kalau cocok. Good luck!`,
+                    'enthusiastic': `Wah, makasih banyak minatnya! 🎉 Kami SELALU cari talenta keren kayak kamu nih! Langsung aja kirim CV terbaikmu ke kami - jangan lupa highlight pengalaman keren kamu ya! Tim HR standby buat cek profil kamu. Gaskeun! 🚀`,
+                    'empathetic': `Terima kasih sudah meluangkan waktu untuk bertanya. Kami mengerti mencari pekerjaan itu prosesnya bisa membuat deg-degan. Untuk info lengkapnya, silakan kirimkan CV Anda dan tim kami akan dengan senang hati membantu mengarahkan sesuai background Anda. Semoga sukses! 🙏`
+                };
+
+                const response = responses[tone];
+                document.getElementById('responseText').textContent = response;
+                document.getElementById('responseLoading').classList.remove('show');
+                document.getElementById('responseResult').style.display = 'block';
+
+                const timestamp = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                responseHistory.unshift({ comment: comment.substring(0, 50) + '...', response: response.substring(0, 100) + '...', time: timestamp, platform: platform });
+                updateHistory();
+            }, 1500);
+        }
+
+        function updateHistory() {
+            const historyDiv = document.getElementById('responseHistory');
+            if (responseHistory.length === 0) return;
+
+            historyDiv.innerHTML = responseHistory.map((item, index) => `
+                <div class="comment-thread" style="opacity: ${index === 0 ? 1 : 0.7};">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <small style="color: var(--accent-gold-dark); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">
+                            <i class="fab fa-${item.platform}"></i> ${item.platform}
+                        </small>
+                        <small style="color: var(--text-light); font-size: 0.8rem;">${item.time}</small>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-primary);"><strong style="color: var(--primary-dark);">Q:</strong> ${item.comment}</p>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); font-style: italic;"><strong style="color: var(--primary-dark);">A:</strong> ${item.response}</p>
+                </div>
+            `).join('');
+        }
+
+        // Content Generator
+        function generateContent() {
+            const topic = document.getElementById('contentTopic').value;
+            const platform = document.getElementById('contentPlatform').value;
+            const goal = document.getElementById('contentGoal').value;
+            const brand = document.getElementById('brandVoice').value;
+
+            if (!topic) {
+                alert('Mohon isi tema/topik postingan');
+                return;
+            }
+
+            document.getElementById('contentLoading').classList.add('show');
+            document.getElementById('contentResult').style.display = 'none';
+
+            setTimeout(() => {
+                const strategies = {
+                    'hiring': `Fokus pada employer branding dan daya tarik perusahaan. Highlight benefit, culture, dan growth opportunity.`,
+                    'engagement': `Gunakan storytelling dan pertanyaan interaktif untuk memicu diskusi di kolom komentar.`,
+                    'branding': `Tunjukkan human side dari perusahaan. Behind-the-scenes dan employee testimonial bekerja sangat baik.`,
+                    'education': `Berikan value dengan tips praktis yang actionable. Gunakan format yang mudah dicerna seperti carousel.`
+                };
+
+                document.getElementById('contentStrategy').innerHTML = `
+                    <p style="line-height: 1.8; opacity: 0.9;">${strategies[goal]}</p>
+                    <div style="margin-top: 1.25rem; padding: 1.25rem; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(201, 169, 110, 0.2);">
+                        <strong style="color: var(--accent-gold-light);"><i class="fas fa-bullseye" style="margin-right: 0.5rem;"></i> Target Audience:</strong>
+                        <p style="margin-top: 0.5rem; opacity: 0.8;">Profesional muda usia 22-35 yang aktif di ${platform}</p>
+                    </div>
+                `;
+
+                const captions = {
+                    'instagram': `✨ ${topic} ✨\n\nKita percaya bahwa growth happens when you're challenged enough but supported enough 💛\n\nSwipe untuk lihat tips dari tim kami! 👉\n\nDrop 💛 kalau kamu setuju!`,
+                    'linkedin': `Insight: ${topic}\n\nDi era yang serba cepat ini, adaptabilitas adalah kunci. Berdasarkan pengalaman kami membangun tim selama 5 tahun terakhir, ada 3 hal krusial yang sering diabaikan:\n\n1. Continuous learning mindset\n2. Collaborative spirit over individual glory  \n3. Data-driven decision making\n\nApa pengalaman Anda? Sharing di kolom komentar 👇`,
+                    'tiktok': `POV: You finally found a company that gets it ✨💛\n${topic} doesn't have to be boring! \n\n#corporatelife #worktok #hiring`,
+                    'facebook': `Info untuk teman-teman yang sedang mencari opportunity! 🌟\n\n${topic}\n\nKami sedang memperluas tim dan mencari individu yang passionate dengan apa yang mereka lakukan. Kalau kamu atau kenalanmu tertarik, bisa langsung DM kami ya!`
+                };
+
+                document.getElementById('captionSuggestion').innerHTML = captions[platform].replace(/\n/g, '<br>');
+
+                const baseHashtags = ['#Hiring', '#Career', '#Opportunity', '#JoinOurTeam', '#WorkLifeBalance'];
+                const specificTags = {
+                    'hiring': ['#LowonganKerja', '#InfoLoker', '#Karir'],
+                    'branding': ['#CompanyCulture', '#GreatPlaceToWork', '#OfficeLife'],
+                    'education': ['#CareerTips', '#ProfessionalDevelopment', '#WorkSmart'],
+                    'engagement': ['#TeamWork', '#Community', '#Discussion']
+                };
+
+                const allTags = [...baseHashtags, ...(specificTags[goal] || [])];
+                document.getElementById('hashtagCloud').innerHTML = allTags.map(tag => 
+                    `<span class="hashtag">${tag}</span>`
+                ).join('');
+
+                const bestTimes = {
+                    'instagram': ['Selasa & Kamis: 11:00 - 13:00', 'Rabu: 17:00 - 19:00'],
+                    'linkedin': ['Selasa - Kamis: 08:00 - 10:00', 'Rabu: 12:00'],
+                    'tiktok': ['Kamis: 19:00 - 21:00', 'Jumat: 15:00 - 17:00'],
+                    'facebook': ['Senin - Jumat: 13:00 - 15:00', 'Sabtu: 12:00 - 14:00']
+                };
+
+                document.getElementById('bestTime').innerHTML = bestTimes[platform].map(time => `
+                    <span style="background: var(--bg-white); padding: 0.75rem 1.25rem; border-radius: 25px; border: 1.5px solid var(--accent-gold); color: var(--accent-gold-dark); font-weight: 500; font-size: 0.9rem;">
+                        <i class="fas fa-clock" style="margin-right: 0.5rem;"></i>
+                        ${time}
+                    </span>
+                `).join('');
+
+                document.getElementById('contentLoading').classList.remove('show');
+                document.getElementById('contentResult').style.display = 'block';
+            }, 2000);
+        }
+
+        function generateVisual() {
+            const topic = document.getElementById('contentTopic').value;
+
+            document.getElementById('imageArea').innerHTML = '<div class="spinner" style="margin: 0 auto;"></div><p style="margin-top: 1rem; color: var(--accent-gold-dark); font-size: 0.9rem;">Generating visual concept...</p>';
+
+            setTimeout(() => {
+                document.getElementById('imageArea').style.display = 'none';
+                document.getElementById('visualResult').style.display = 'block';
+
+                const colors = [
+                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+                ];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                document.getElementById('generatedVisual').style.background = randomColor;
+                document.getElementById('visualDesc').textContent = `Visual concept: ${topic} dengan tema profesional-modern, menggunakan warna brand yang elegan dan typography clean. Rekomendasi: Gunakan illustration style dengan human element.`;
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    scrollToSection(targetId);
+                });
+            });
+
+            // Prevent drag drop on document (only allow in drop zone)
+            document.addEventListener('dragover', function(e) {
+                if (!e.target.closest('#dragDropZone')) {
+                    e.preventDefault();
+                }
+            });
+
+            document.addEventListener('drop', function(e) {
+                if (!e.target.closest('#dragDropZone')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
